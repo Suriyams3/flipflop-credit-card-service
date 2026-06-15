@@ -1,0 +1,39 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: flipflop-credit-card-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/flipflop_creditcard_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    # Uses the environment file variable you set up in your IntelliJ Run Configuration
+    password: ${MYSQL_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Activates the Circuit Breaker engine within OpenFeign
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
+# Resilience4j Circuit Breaker Engine Settings
+resilience4j:
+  circuitbreaker:
+    instances:
+      offersServiceCB:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5                  # Monitors the last 5 requests sent to the Offers Service
+        failureRateThreshold: 50              # Opens the circuit if 50% or more of those 5 requests fail
+        waitDurationInOpenState: 15s          # Keeps the circuit open for 15 seconds before trying again
+        permittedNumberOfCallsInHalfOpenState: 2 # Allows 2 trial requests in half-open state to test recovery

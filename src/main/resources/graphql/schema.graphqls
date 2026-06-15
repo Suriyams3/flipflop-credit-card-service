@@ -1,0 +1,28 @@
+type Query {
+    # The main entry point to fetch data by account number
+    getCreditCardDetails(accountNumber: String!): CreditCardDetails
+}
+
+# Matches the data model from your local credit_card_details table
+type CreditCardDetails {
+    accountNumber: String!
+    creditCardNumber: String!
+    expiryDate: String!
+    creditPointsAvailable: Int!
+    creditPointsExpiryDate: String
+    cibilScore: Int!
+
+    # This array field will be dynamically stitched into the response
+    # via the REST call to the downstream Offers microservice
+    eligibleOffers: [CreditCardOffer]
+}
+
+# Matches the structure returned by the flipflop-credit-card-offers-service REST API
+type CreditCardOffer {
+    offerId: ID
+    offerName: String
+    sponsorName: String
+    offerValidUpto: String
+    discountPercentage: Float
+    offerDescription: String
+}
