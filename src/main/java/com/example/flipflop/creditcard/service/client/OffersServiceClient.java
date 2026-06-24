@@ -10,7 +10,7 @@ import java.util.List;
 
 @FeignClient(
         name = "flipflop-credit-card-offers-service",
-        url = "http://localhost:8083",
+        url = "http://${OFFERS_SERVICE_HOST:localhost}:8083",
         fallback = OffersServiceClient.OffersFallback.class
 )
 public interface OffersServiceClient {
